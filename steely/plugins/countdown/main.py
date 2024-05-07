@@ -277,3 +277,4 @@ def create_game(bot, message: SteelyMessage, **kwargs):
 def listen_for_words(bot, message: SteelyMessage, **kwargs):
     GAME_MANAGER.add_word(
         message.thread_id, message.author_id, message.text.strip())
+    bot.reactToMessage(message.thread_id, message.message_id)

@@ -111,12 +111,13 @@ class Client:
         self.thread = defaultdict(lambda: deque(iterable=[],
             maxlen=Client.NUM_STORED_MESSAGES_IN_THREAD))
 
-    def _create_steely_message(self, author_id, text, thread_id, thread_type):
+    def _create_steely_message(self, author_id, text, thread_id, thread_type, message_id):
         m = SteelyMessage()
         m.author_id = author_id
         m.text = text
         m.thread_id = thread_id
         m.thread_type = thread_type
+        m.message_id = message_id
         return m
 
     def listen(self):
@@ -142,7 +143,8 @@ class Client:
                         text = update.effective_message.text,
                         thread_id = thread_id,
                         thread_type = _telegram_chat_to_fbchat_thread_type(
-                            update.effective_chat))
+                            update.effective_chat),
+                        message_id = update.effective_message.message_id)
                 self.onMessage(message)
             except Exception as e:
                 log(e)
@@ -223,6 +225,10 @@ class Client:
     def searchForUsers(self, name, limit=10):
         '''Finds users by their display name.'''
         return self.user_manager.search_for_users(name)
+
+    def reactToMessage(self, thread_id, message_id):
+        print(dir(self.bot))
+        self.bot.set_message_reaction(thread_id, message_id, reaction='BANANA')
 
 def log(*args, **kwargs):
     print("log:", *args, *kwargs)

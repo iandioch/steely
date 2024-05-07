@@ -8,4 +8,5 @@ class SteelyMessage:
     thread_id: str
     thread_type: str
     text: str
+    message_id: str
     # TODO(iandioch): Add image_id.
