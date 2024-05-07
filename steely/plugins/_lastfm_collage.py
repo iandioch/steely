@@ -2,10 +2,10 @@ from plugins._lastfm_helpers import *
 import requests
 
 
-def get_collage(author_id, user, period):
+def get_collage(author_id, user, period, size):
     params = {'user': user,
               'type': period,
-              'size': '3x3',
+              'size': size,
               'caption': 'true'}
     image_res = requests.get(COLLAGE_BASE, params=params)
     image = image_res.content
@@ -23,9 +23,14 @@ def main(bot, author_id, message_parts, thread_id, thread_type, **kwargs):
         return
     else:
         period = message_parts[0]
-    if len(message_parts) == 2:
+    if len(message_parts) >= 2:
         username = message_parts[1]
     else:
         username = USERDB.get(USER.id == author_id)["username"]
-    bot.sendLocalImage(get_collage(author_id, username, period),
+    size = '3x3'
+    if len(message_parts) >= 3:
+        if message_parts[2] in ['3', '4', '5']:
+            size = f'{message_parts[2]}x{message_parts[2]}'
+
+    bot.sendLocalImage(get_collage(author_id, username, period, size),
                        message=None, thread_id=thread_id, thread_type=thread_type)
